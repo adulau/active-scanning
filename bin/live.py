@@ -7,8 +7,7 @@ import sys
 import json
 import time
 import asyncio
-
-# https://websockets.readthedocs.io/
+import argparse
 import websockets
 
 class RISliveWebsocket():
@@ -52,9 +51,13 @@ async def main(router, asn):
                 if 'announcements' in bgp_message:
                     for net in bgp_message['announcements']:
                         for networks in net['prefixes']:
-                            print (networks)
+                            if args.verbose:
+                                print (networks)
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--verbose", help="verbose output", action="store_true")
+    args = parser.parse_args()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(asyncio.wait([main('rrc21', None), tick()]))
